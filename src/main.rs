@@ -1,9 +1,9 @@
-use self::library::Images;
+use self::library::Compressor;
 
 mod library;
 
 #[tokio::main]
 async fn main() {
-    let images = Images::new("./input_images/", "./output_images/");
+    let images = Compressor::new("./input_images/", "./output_images/");
     images.compress_of_images().await;
 }

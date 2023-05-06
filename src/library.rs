@@ -4,13 +4,13 @@ use image::{DynamicImage, imageops::resize, imageops::FilterType::Triangle};
 use webp::{WebPMemory, Encoder};
 use std::time::Instant;
 #[derive(Debug)]
-pub struct Images<'a> {
+pub struct Compressor<'a> {
     pub input_directory: Box<&'a Path>,
     pub output_directory: Box<&'a Path>,
     iterator: u16,
 }
 
-impl<'a> Images<'a> {
+impl<'a> Compressor<'a> {
     pub fn new(input_directory: &'static str, output_directory: &'static str) -> Self {
         let input_path = Path::new(input_directory);
         if !input_path.exists() {
