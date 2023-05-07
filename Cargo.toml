@@ -5,6 +5,5 @@ edition = "2021"
 
 [dependencies]
 "webp" = "0.2.2"
-"image" = "0.24.6"
-"tokio" = { version = "1.27.0", features = ["full"] }
+"image" = "0.24.0"
 "walkdir" = "2.3.3"

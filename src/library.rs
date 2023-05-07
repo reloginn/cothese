@@ -1,8 +1,9 @@
-use image::{imageops::resize, imageops::FilterType::Triangle, DynamicImage, ImageBuffer};
+use image::{imageops::resize, imageops::FilterType::Triangle, DynamicImage};
 use std::path::{Path, PathBuf};
 use std::time::Instant;
 use walkdir::WalkDir;
 use webp::{Encoder, WebPMemory};
+
 #[derive(Debug)]
 pub struct Compressor<'a> {
     pub input_directory: &'a Path,
