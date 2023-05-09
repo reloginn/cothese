@@ -70,20 +70,20 @@ impl<'a> Compressor<'a> {
     }
 }
 
-fn convert(input_path: &Path, output_path: &PathBuf) {
+fn convert(path_to_file: &Path, output_path: &Path) {
     let start = Instant::now();
-    println!("Начинаю конвертировать файл {:?}...", &input_path);
-    let img = image::open(input_path).unwrap();
-    let (w, h) = (img.width(), img.height());
+    println!("Начинаю конвертировать файл {:?}...", &path_to_file);
+    let image = image::open(path_to_file).unwrap();
+    let (width, height) = (image.width(), image.height());
     let size_factor = 1.0;
     let img: DynamicImage = image::DynamicImage::ImageRgba8(resize(
-        &img,
-        (w as f64 * size_factor) as u32,
-        (h as f64 * size_factor) as u32,
+        &image,
+        (width as f64 * size_factor) as u32,
+        (height as f64 * size_factor) as u32,
         Triangle,
     ));
     let encoder: Encoder = Encoder::from_image(&img).unwrap();
     let webp: WebPMemory = encoder.encode(90f32);
-    std::fs::write(&output_path, &*webp).unwrap();
+    std::fs::write(output_path, &*webp).unwrap();
     println!("Файл успешно конвертирован за {:?}", start.elapsed());
 }
