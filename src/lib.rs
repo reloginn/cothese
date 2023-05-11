@@ -1,4 +1,7 @@
 pub use self::compressor::Compressor;
-pub use self::compressor::SelfErrors;
 
+mod kinds {
+    pub mod png;
+    pub mod webp;
+}
 mod compressor;
