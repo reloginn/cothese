@@ -1,6 +1,8 @@
 #![allow(unused)]
 
+use crate::generate_random_name;
 use std::{
+    borrow::Borrow,
     path::{Path, PathBuf},
     sync::Arc,
     time::Instant,
@@ -20,15 +22,24 @@ pub struct WebP {
 }
 
 impl WebP {
-    pub fn compress(&self) {
-        let file_paths = &self.get_all_of_files_in_directory();
-        let mut iter: u16 = 0;
-        for file in file_paths.iter() {
-            let path = Path::new(file);
+    pub async fn compress(&self) {
+        let mut file_paths: Vec<PathBuf> = Vec::new();
+
+        for entry in WalkDir::new(&*self.input_dir)
+            .max_depth(1)
+            .into_iter()
+            .filter_map(|e| e.ok())
+        {
+            if entry.file_type().is_file() {
+                file_paths.push(entry.path().to_path_buf());
+            }
+        }
+        let mut count: usize = 0;
+        for path in file_paths.iter() {
             if path.is_file() {
                 match path.extension().unwrap_or_default().to_str().unwrap() {
                     "png" | "jpg" | "jpeg" => {
-                        iter += 1;
+                        count += 1;
                         let start = Instant::now();
                         println!("Начинаю конвертировать файл {:?}...", &path);
                         let image = image::open(path).unwrap();
@@ -45,7 +56,7 @@ impl WebP {
                         std::fs::write(
                             &self
                                 .output_dir
-                                .join(format!("{}", iter))
+                                .join(format!("{}", generate_random_name()))
                                 .with_extension("webp"),
                             &*webp,
                         )
@@ -56,10 +67,10 @@ impl WebP {
                 }
             }
         }
-        if iter <= 0 {
+        if count <= 0 {
             println!("В заданной директории не было JPEG, PNG картинок, ничего не затронуто");
         } else {
-            println!("Успешно конвертировано {} картинок", iter)
+            println!("Успешно конвертировано {} картинок", count)
         }
     }
     fn get_all_of_files_in_directory(&self) -> Vec<PathBuf> {
