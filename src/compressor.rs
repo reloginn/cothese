@@ -1,4 +1,9 @@
-use image::{imageops::resize, imageops::FilterType::Triangle, DynamicImage};
+#![allow(unused)]
+
+use image::{
+    imageops::{resize, FilterType::Triangle},
+    DynamicImage,
+};
 use std::{
     fmt::Display,
     path::{Path, PathBuf},
@@ -8,8 +13,8 @@ use std::{
 use walkdir::WalkDir;
 use webp::{Encoder, WebPMemory};
 
+use crate::kinds::{png::PNG, webp::WebP};
 
-/// Перечисление для ошибок
 #[allow(unused)]
 #[derive(Debug)]
 pub enum SelfErrors<T>
@@ -34,107 +39,55 @@ where
 
 #[derive(Debug)]
 pub struct Compressor {
-    input_directory: Arc<PathBuf>,
-    output_directory: Arc<PathBuf>,
+    input_dir: Arc<PathBuf>,
+    output_dir: Arc<PathBuf>,
+}
+
+#[derive(Debug)]
+pub struct FromCompressor {
+    input_dir: Arc<PathBuf>,
+    output_dir: Arc<PathBuf>,
 }
 
 impl Compressor {
-
-    /// Метод для создания экземпляра структуры
-    /// 
-    /// Принимает два аргумента, первый - path до директории откуда будут браться картинки, второй - path до директории где они будут сохраняться
-    /// 
-    /// # Пример:
-    /// ```
-    /// let compressor = Compressor::new("./input_images/", "./output_images/").unwrap();
-    /// ```
-    pub fn new(
-        input_directory: &'static str,
-        output_directory: &'static str,
-    ) -> Result<Self, SelfErrors<String>> {
-        let (input_path, output_path) = (
-            PathBuf::from(input_directory),
-            PathBuf::from(output_directory),
+    pub fn new<T>(input_directory: T, output_directory: T) -> Result<Self, SelfErrors<String>>
+    where
+        T: Display,
+        PathBuf: From<T>,
+    {
+        let (input_dir, output_dir) = (
+            Arc::new(PathBuf::from(input_directory)),
+            Arc::new(PathBuf::from(output_directory)),
         );
-        if !input_path.exists() || !output_path.exists() {
+        if !input_dir.exists() || !output_dir.exists() {
             return Err(SelfErrors::InvalidDirectory(String::from(
-                "Одна из директорий невалидна",
+                "Одна из директорий невалидна, проверьте правильность директорий",
             )));
         }
         Ok(Self {
-            input_directory: Arc::new(input_path),
-            output_directory: Arc::new(output_path),
+            input_dir,
+            output_dir,
         })
     }
-
-    /// Метод для сжатия изображений
-    /// 
-    /// Нуждается в экземпляре структуры с валидными paths.
-    /// 
-    /// # Пример:
-    /// 
-    /// ```
-    /// let compressor = Compressor::new("./input_images/", "./output_images").unwrap();
-    /// compressor.compress_of_images(); // Запускает сжатие всех картинок из входящей директории
-    /// ```
-    pub fn compress_of_images(&self) {
-        let file_paths = &self.get_all_of_files_in_directory();
-        let mut iter: u16 = 0;
-        for file in file_paths.iter() {
-            let path = Path::new(file);
-            if path.is_file() {
-                match path.extension().unwrap_or_default().to_str().unwrap() {
-                    "png" | "jpg" | "jpeg" => {
-                        iter += 1;
-                        convert(
-                            path,
-                            &self
-                                .output_directory
-                                .join(format!("{}", iter))
-                                .with_extension("webp"),
-                        );
-                    }
-                    _ => (),
-                }
-            }
+    pub fn from(self) -> FromCompressor {
+        FromCompressor {
+            input_dir: self.input_dir,
+            output_dir: self.output_dir,
         }
-        if iter <= 0 {
-            println!("В заданной директории не было JPEG, PNG картинок, ничего не затронуто");
-        } else {
-            println!("Успешно конвертировано {} картинок", iter)
-        }
-    }
-    fn get_all_of_files_in_directory(&self) -> Vec<PathBuf> {
-        let mut file_paths: Vec<PathBuf> = Vec::new();
-
-        for entry in WalkDir::new(&*self.input_directory)
-            .max_depth(1)
-            .into_iter()
-            .filter_map(|e| e.ok())
-        {
-            if entry.file_type().is_file() {
-                file_paths.push(entry.path().to_path_buf());
-            }
-        }
-
-        file_paths
     }
 }
 
-fn convert(path_to_file: &Path, output_path: &Path) {
-    let start = Instant::now();
-    println!("Начинаю конвертировать файл {:?}...", &path_to_file);
-    let image = image::open(path_to_file).unwrap();
-    let (width, height) = (image.width(), image.height());
-    let size_factor = 1.0;
-    let img: DynamicImage = image::DynamicImage::ImageRgba8(resize(
-        &image,
-        (width as f64 * size_factor) as u32,
-        (height as f64 * size_factor) as u32,
-        Triangle,
-    ));
-    let encoder: Encoder = Encoder::from_image(&img).unwrap();
-    let webp: WebPMemory = encoder.encode(90f32);
-    std::fs::write(output_path, &*webp).unwrap();
-    println!("Файл успешно конвертирован за {:?}", start.elapsed());
+impl FromCompressor {
+    pub fn webp(self) -> WebP {
+        WebP {
+            input_dir: self.input_dir,
+            output_dir: self.output_dir,
+        }
+    }
+    pub fn png(self) -> PNG {
+        PNG {
+            input_dir: self.input_dir,
+            output_dir: self.output_dir,
+        }
+    }
 }
