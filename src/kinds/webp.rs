@@ -1,5 +1,6 @@
 #![allow(unused)]
 
+use std::fs;
 use crate::generate_random_name;
 use std::{
     borrow::Borrow,
@@ -12,7 +13,6 @@ use image::{
     imageops::{resize, FilterType::Triangle},
     DynamicImage,
 };
-use walkdir::WalkDir;
 use webp::{Encoder, WebPMemory};
 
 #[derive(Debug)]
@@ -22,23 +22,14 @@ pub struct WebP {
 }
 
 impl WebP {
-    pub async fn compress(&self) {
-        let mut file_paths: Vec<PathBuf> = Vec::new();
-
-        for entry in WalkDir::new(&*self.input_dir)
-            .max_depth(1)
-            .into_iter()
-            .filter_map(|e| e.ok())
-        {
-            if entry.file_type().is_file() {
-                file_paths.push(entry.path().to_path_buf());
-            }
-        }
+    pub fn compress(&self) {
+        let entries = fs::read_dir(&*self.input_dir).expect("Не могу прочитать директорию");
         let mut count: usize = 0;
-        for path in file_paths.iter() {
-            if path.is_file() {
-                match path.extension().unwrap_or_default().to_str().unwrap() {
-                    "png" | "jpg" | "jpeg" => {
+        for entry in entries {
+            if let Ok(entry) = entry {
+                let path = entry.path();
+                if path.is_file() {
+                    if let "jpg" | "jpeg" | "png" = path.extension().unwrap().to_str().unwrap() {
                         count += 1;
                         let start = Instant::now();
                         println!("Начинаю конвертировать файл {:?}...", &path);
@@ -63,7 +54,6 @@ impl WebP {
                         .unwrap();
                         println!("Файл успешно конвертирован за {:?}", start.elapsed());
                     }
-                    _ => (),
                 }
             }
         }
@@ -72,19 +62,5 @@ impl WebP {
         } else {
             println!("Успешно конвертировано {} картинок", count)
         }
-    }
-    fn get_all_of_files_in_directory(&self) -> Vec<PathBuf> {
-        let mut file_paths: Vec<PathBuf> = Vec::new();
-
-        for entry in WalkDir::new(&*self.input_dir)
-            .max_depth(1)
-            .into_iter()
-            .filter_map(|e| e.ok())
-        {
-            if entry.file_type().is_file() {
-                file_paths.push(entry.path().to_path_buf());
-            }
-        }
-        file_paths
     }
 }

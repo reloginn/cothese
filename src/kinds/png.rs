@@ -1,8 +1,14 @@
 #![allow(unused)]
 
-use std::{path::PathBuf, sync::Arc};
-
-use walkdir::WalkDir;
+use crate::generate_random_name;
+use std::fs;
+use std::process::exit;
+use std::{
+    fs::File,
+    path::{Path, PathBuf},
+    process::Command,
+    sync::Arc,
+};
 
 #[derive(Debug)]
 pub struct PNG {
@@ -12,20 +18,44 @@ pub struct PNG {
 
 impl PNG {
     pub fn compress(&self) {
-        println!("Заглушка");
-    }
-    fn get_all_of_files_in_directory(&self) -> Vec<PathBuf> {
-        let mut file_paths: Vec<PathBuf> = Vec::new();
+        let entries = fs::read_dir(&*self.input_dir).expect("Не могу прочитать директорию");
+        for entry in entries {
+            if let Ok(entry) = entry {
+                let path = entry.path();
 
-        for entry in WalkDir::new(&*self.input_dir)
-            .max_depth(1)
-            .into_iter()
-            .filter_map(|e| e.ok())
-        {
-            if entry.file_type().is_file() {
-                file_paths.push(entry.path().to_path_buf());
+                if path.is_file() && path.extension().unwrap() == "png" {
+                    let install = Command::new("cargo")
+                        .args(["install", "pngquant"])
+                        .status()
+                        .unwrap_or_else(|err| {
+                            eprintln!("Возникла ошибка: {}", err);
+                            exit(0)
+                        });
+                    if !install.success() {
+                        panic!("Операция скачивания pngquant завершилась неудачно");
+                    }
+                    let quantize = Command::new("pngquant")
+                        .args([
+                            "--force",
+                            path.to_str().unwrap(),
+                            "--output",
+                            &self
+                                .output_dir
+                                .join(format!("{}", generate_random_name()))
+                                .with_extension("png")
+                                .to_str()
+                                .unwrap(),
+                        ])
+                        .status()
+                        .unwrap_or_else(|err| {
+                            eprintln!("Возникла ошибка: {}", err);
+                            exit(0)
+                        });
+                    if !quantize.success() {
+                        panic!("Операция квантинизации завершилась неудачно")
+                    }
+                }
             }
         }
-        file_paths
     }
 }

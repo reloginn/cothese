@@ -10,7 +10,6 @@ use std::{
     sync::Arc,
     time::Instant,
 };
-use walkdir::WalkDir;
 use webp::{Encoder, WebPMemory};
 
 use crate::kinds::{png::PNG, webp::WebP};
