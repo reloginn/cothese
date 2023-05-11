@@ -8,6 +8,8 @@ use std::{
 use walkdir::WalkDir;
 use webp::{Encoder, WebPMemory};
 
+
+/// Перечисление для ошибок
 #[allow(unused)]
 #[derive(Debug)]
 pub enum SelfErrors<T>
@@ -37,6 +39,15 @@ pub struct Compressor {
 }
 
 impl Compressor {
+
+    /// Метод для создания экземпляра структуры
+    /// 
+    /// Принимает два аргумента, первый - path до директории откуда будут браться картинки, второй - path до директории где они будут сохраняться
+    /// 
+    /// # Пример:
+    /// ```
+    /// let compressor = Compressor::new("./input_images/", "./output_images/").unwrap();
+    /// ```
     pub fn new(
         input_directory: &'static str,
         output_directory: &'static str,
@@ -55,6 +66,17 @@ impl Compressor {
             output_directory: Arc::new(output_path),
         })
     }
+
+    /// Метод для сжатия изображений
+    /// 
+    /// Нуждается в экземпляре структуры с валидными paths.
+    /// 
+    /// # Пример:
+    /// 
+    /// ```
+    /// let compressor = Compressor::new("./input_images/", "./output_images").unwrap();
+    /// compressor.compress_of_images(); // Запускает сжатие всех картинок из входящей директории
+    /// ```
     pub fn compress_of_images(&self) {
         let file_paths = &self.get_all_of_files_in_directory();
         let mut iter: u16 = 0;
