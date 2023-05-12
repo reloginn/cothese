@@ -1,18 +1,6 @@
-#![allow(unused)]
+use std::{fmt::Display, path::PathBuf, sync::Arc};
 
-use image::{
-    imageops::{resize, FilterType::Triangle},
-    DynamicImage,
-};
-use std::{
-    fmt::Display,
-    path::{Path, PathBuf},
-    sync::Arc,
-    time::Instant,
-};
-use webp::{Encoder, WebPMemory};
-
-use crate::kinds::{png::PNG, webp::WebP};
+use crate::kinds::{all::All, png::PNG, webp::WebP};
 
 #[allow(unused)]
 #[derive(Debug)]
@@ -20,8 +8,7 @@ pub enum SelfErrors<T>
 where
     T: Display,
 {
-    InvalidDirectory(T),
-    Other(T),
+    Error(T),
 }
 
 impl<T> Display for SelfErrors<T>
@@ -30,8 +17,7 @@ where
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::InvalidDirectory(err) => writeln!(f, "{}", err),
-            Self::Other(err) => writeln!(f, "{}", err),
+            Self::Error(err) => writeln!(f, "{}", err),
         }
     }
 }
@@ -59,7 +45,7 @@ impl Compressor {
             Arc::new(PathBuf::from(output_directory)),
         );
         if !input_dir.exists() || !output_dir.exists() {
-            return Err(SelfErrors::InvalidDirectory(String::from(
+            return Err(SelfErrors::Error(String::from(
                 "Одна из директорий невалидна, проверьте правильность директорий",
             )));
         }
@@ -85,6 +71,12 @@ impl FromCompressor {
     }
     pub fn png(self) -> PNG {
         PNG {
+            input_dir: self.input_dir,
+            output_dir: self.output_dir,
+        }
+    }
+    pub fn all(self) -> All {
+        All {
             input_dir: self.input_dir,
             output_dir: self.output_dir,
         }

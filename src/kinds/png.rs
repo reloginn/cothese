@@ -1,14 +1,5 @@
-#![allow(unused)]
-
-use crate::generate_random_name;
-use std::fs;
-use std::process::exit;
-use std::{
-    fs::File,
-    path::{Path, PathBuf},
-    process::Command,
-    sync::Arc,
-};
+use crate::{generate_random_name, quantize_png};
+use std::{path::PathBuf, sync::Arc, fs};
 
 #[derive(Debug)]
 pub struct PNG {
@@ -24,36 +15,12 @@ impl PNG {
                 let path = entry.path();
 
                 if path.is_file() && path.extension().unwrap() == "png" {
-                    let install = Command::new("cargo")
-                        .args(["install", "pngquant"])
-                        .status()
-                        .unwrap_or_else(|err| {
-                            eprintln!("Возникла ошибка: {}", err);
-                            exit(0)
-                        });
-                    if !install.success() {
-                        panic!("Операция скачивания pngquant завершилась неудачно");
-                    }
-                    let quantize = Command::new("pngquant")
-                        .args([
-                            "--force",
-                            path.to_str().unwrap(),
-                            "--output",
-                            &self
-                                .output_dir
-                                .join(format!("{}", generate_random_name()))
-                                .with_extension("png")
-                                .to_str()
-                                .unwrap(),
-                        ])
-                        .status()
-                        .unwrap_or_else(|err| {
-                            eprintln!("Возникла ошибка: {}", err);
-                            exit(0)
-                        });
-                    if !quantize.success() {
-                        panic!("Операция квантинизации завершилась неудачно")
-                    }
+                    quantize_png(
+                        path,
+                        self.output_dir
+                            .join(format!("{}", generate_random_name()))
+                            .with_extension("png"),
+                    )
                 }
             }
         }
