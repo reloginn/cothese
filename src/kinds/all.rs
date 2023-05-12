@@ -1,36 +1,36 @@
-use crate::{compress_jpeg_to_webp, generate_random_name};
-use std::{path::PathBuf, sync::Arc, fs};
+use crate::{compress_jpeg_to_webp, generate_random_name, quantize_png};
+use std::{fs, path::PathBuf, sync::Arc};
 
 #[derive(Debug)]
-pub struct WebP {
+pub struct All {
     pub(crate) input_dir: Arc<PathBuf>,
     pub(crate) output_dir: Arc<PathBuf>,
 }
 
-impl WebP {
+impl All {
     pub fn compress(&self) {
         let entries = fs::read_dir(&*self.input_dir).expect("Не могу прочитать директорию");
-        let mut count: usize = 0;
         for entry in entries {
             if let Ok(entry) = entry {
                 let path = entry.path();
                 if path.is_file() {
-                    if let "jpg" | "jpeg" | "png" = path.extension().unwrap().to_str().unwrap() {
-                        count += 1;
-                        compress_jpeg_to_webp(
+                    match path.extension().unwrap().to_str().unwrap() {
+                        "jpeg" | "jpg" => compress_jpeg_to_webp(
                             path,
                             self.output_dir
                                 .join(format!("{}", generate_random_name()))
                                 .with_extension("webp"),
-                        )
+                        ),
+                        "png" => quantize_png(
+                            path,
+                            self.output_dir
+                                .join(format!("{}", generate_random_name()))
+                                .with_extension("png"),
+                        ),
+                        _ => (),
                     }
                 }
             }
-        }
-        if count <= 0 {
-            println!("В заданной директории не было JPEG, PNG картинок, ничего не затронуто");
-        } else {
-            println!("Успешно конвертировано {} картинок", count)
         }
     }
 }
