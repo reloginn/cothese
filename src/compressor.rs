@@ -29,7 +29,7 @@ pub struct Compressor {
 }
 
 #[derive(Debug)]
-pub struct FromCompressor {
+pub struct To {
     input_dir: Dir,
     output_dir: Dir,
 }
@@ -54,15 +54,15 @@ impl Compressor {
             output_dir,
         })
     }
-    pub fn from(self) -> FromCompressor {
-        FromCompressor {
+    pub fn to(self) -> To {
+        To {
             input_dir: self.input_dir,
             output_dir: self.output_dir,
         }
     }
 }
 
-impl FromCompressor {
+impl To {
     pub fn webp(self) -> WebP {
         WebP {
             input_dir: self.input_dir,

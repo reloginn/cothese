@@ -13,14 +13,15 @@ impl PNG {
         for entry in entries {
             if let Ok(entry) = entry {
                 let path = entry.path();
-
-                if path.is_file() && path.extension().unwrap() == "png" {
-                    quantize_png(
-                        path,
-                        self.output_dir
-                            .join(format!("{}", generate_random_name()))
-                            .with_extension("png"),
-                    )
+                if path.is_file() {
+                    if let "png" = path.extension().unwrap().to_str().unwrap() {
+                        quantize_png(
+                            path,
+                            self.output_dir
+                                .join(format!("{}", generate_random_name()))
+                                .with_extension("png"),
+                        )
+                    }
                 }
             }
         }
