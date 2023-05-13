@@ -1,10 +1,10 @@
-use crate::trash::{generate_random_name, quantize_png};
-use std::{path::PathBuf, sync::Arc, fs};
+use crate::{trash::{generate_random_name, quantize_png}, Dir};
+use std::fs;
 
 #[derive(Debug)]
 pub struct PNG {
-    pub(crate) input_dir: Arc<PathBuf>,
-    pub(crate) output_dir: Arc<PathBuf>,
+    pub(crate) input_dir: Dir,
+    pub(crate) output_dir: Dir,
 }
 
 impl PNG {

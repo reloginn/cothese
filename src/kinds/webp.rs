@@ -1,10 +1,10 @@
-use crate::trash::{compress_jpeg_to_webp, generate_random_name};
-use std::{path::PathBuf, sync::Arc, fs};
+use crate::{trash::{compress_jpeg_to_webp, generate_random_name}, Dir};
+use std::fs;
 
 #[derive(Debug)]
 pub struct WebP {
-    pub(crate) input_dir: Arc<PathBuf>,
-    pub(crate) output_dir: Arc<PathBuf>,
+    pub(crate) input_dir: Dir,
+    pub(crate) output_dir: Dir,
 }
 
 impl WebP {

@@ -1,6 +1,6 @@
 use std::{fmt::Display, path::PathBuf, sync::Arc};
 
-use crate::kinds::{all::All, png::PNG, webp::WebP};
+use crate::{kinds::{all::All, png::PNG, webp::WebP}, Dir};
 
 #[allow(unused)]
 #[derive(Debug)]
@@ -24,14 +24,14 @@ where
 
 #[derive(Debug)]
 pub struct Compressor {
-    input_dir: Arc<PathBuf>,
-    output_dir: Arc<PathBuf>,
+    input_dir: Dir,
+    output_dir: Dir,
 }
 
 #[derive(Debug)]
 pub struct FromCompressor {
-    input_dir: Arc<PathBuf>,
-    output_dir: Arc<PathBuf>,
+    input_dir: Dir,
+    output_dir: Dir,
 }
 
 impl Compressor {

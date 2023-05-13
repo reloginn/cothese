@@ -1,10 +1,10 @@
-use crate::trash::{compress_jpeg_to_webp, generate_random_name, quantize_png};
-use std::{fs, path::PathBuf, sync::Arc};
+use crate::{trash::{compress_jpeg_to_webp, generate_random_name, quantize_png}, Dir};
+use std::fs;
 
 #[derive(Debug)]
 pub struct All {
-    pub(crate) input_dir: Arc<PathBuf>,
-    pub(crate) output_dir: Arc<PathBuf>,
+    pub(crate) input_dir: Dir,
+    pub(crate) output_dir: Dir,
 }
 
 impl All {

@@ -1,3 +1,5 @@
+use std::{sync::Arc, path::PathBuf};
+
 pub use self::compressor::Compressor;
 
 mod kinds {
@@ -7,3 +9,5 @@ mod kinds {
 }
 mod compressor;
 mod trash;
+
+type Dir = Arc<PathBuf>;
