@@ -1,4 +1,4 @@
-use crate::{generate_random_name, quantize_png};
+use crate::trash::{generate_random_name, quantize_png};
 use std::{path::PathBuf, sync::Arc, fs};
 
 #[derive(Debug)]

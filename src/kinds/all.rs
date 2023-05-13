@@ -1,4 +1,4 @@
-use crate::{compress_jpeg_to_webp, generate_random_name, quantize_png};
+use crate::trash::{compress_jpeg_to_webp, generate_random_name, quantize_png};
 use std::{fs, path::PathBuf, sync::Arc};
 
 #[derive(Debug)]
