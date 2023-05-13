@@ -1,28 +1,26 @@
 # Как пользоваться?
 - Для того чтобы начать работу, создайте новый экземпляр структуры `Compressor`, внутри которого поместите `path с картинками для сжатия` и `path куда будут сохраняться сжатые картинки`:
-```
-let compressor = Compressor::new("./input_images/", "./output_images/").unwrap()
-  .from().webp();
-compressor.compress();
+```rust
+let _ = Compressor::new("./input_images/", "./output_images/").unwrap()
+  .from().webp().compress(); // 
 ```
 - В данном примере я создаю экземпляр структуры, далее с помощью метода `from()` выбираю нужный тип сжатия, в моём случае `webp`, и с помощью метода `compress()` запускаю сжатие.
 
 # Какие ещё существуют типы сжатия?
 - Помимо метода `webp()`, который сжимает `.jpg, .jpeg, .png` файлы в `.webp`, есть метод `png()` который `квантизирует .png в .png` (сжатие без потери качества), и есть метод `all()`, который использует оба типа сжатия, а именно: `.jpg, .jpeg => .webp; .png => .png`
 - Примеры:
-```
-let compressor = Compressor::new("./input_images/", "./output_images/").unwrap()
-  .from().png().compress(); // Квантизируем .png файлы в .png 
+```rust
+let _ = Compressor::new("./input_images/", "./output_images/").unwrap()
+  .to().png().compress(); // quantize .png => .png (1,5-3x), без потери качества
 ```
 или
-```
-let compressor = Compressor::new("./input_images/", "./output_images/").unwrap()
-  .from().all().compress(); // .jpeg, .jpg => .webp; .png => .png
+```rust
+let _ = Compressor::new("./input_images/", "./output_images/").unwrap()
+  .to().all().compress(); // .jpeg, .jpg => .webp; .png => .png
 ```
 
-# Что делает эта программа?
-- Сжимает все ваши .jpg, .jpeg, .png изображения в формат .webp без потери качества, в общем, картинка сжимается примерно в 1.5 раза, при этом не теряя качества, но иногда дело может доходить до ужатия в 3 раза без потери качества (см. пример в `input_images`, где лежит исходной файл и в `output_images` где лежит сжатый .webp файл)
-- Также данная библиотека умеет сжимать .png в .png, результаты примерно такие же как у .jpg, .png., .jpeg в .webp.
+# Что делает эта библиотека?
+- Сжимает .jpeg, .jpg, .png файлы в указанный формат, см. примеры выше.
 
 # Цели
 - [ ] Перевести всю библиотеку на async
