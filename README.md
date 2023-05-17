@@ -1,7 +1,7 @@
 # Как пользоваться?
 - Для того чтобы начать работу, создайте новый экземпляр структуры `Compressor`, внутри которого поместите `path с картинками для сжатия` и `path куда будут сохраняться сжатые картинки`, выберите что и во что будете сжимать, и запустите с помощью метода `compress()`:
 ```rust
-let _ = Compressor::new("./input_images/", "./output_images/").unwrap()
+let _ = Compressor::new("./input_images/", "./output_images/", false).unwrap()
   .to().webp().compress(); // .jpeg, .jpg, .png => .webp (1,5-3x), без потери качества
 ```
 - В данном примере я создаю экземпляр структуры, далее с помощью методов `to()` и `webp()` выбираю нужный тип сжатия, в моём случае `webp`, и с помощью метода `compress()` запускаю сжатие.
@@ -11,12 +11,12 @@ let _ = Compressor::new("./input_images/", "./output_images/").unwrap()
 - Помимо метода `webp()`, который сжимает `.jpg, .jpeg, .png` файлы в `.webp`, есть метод `png()` который `квантизирует .png в .png` (сжатие без потери качества), и есть метод `all()`, который использует оба типа сжатия, а именно: `.jpg, .jpeg => .webp; .png => .png`
 - Примеры:
 ```rust
-let _ = Compressor::new("./input_images/", "./output_images/").unwrap()
+let _ = Compressor::new("./input_images/", "./output_images/", false).unwrap()
   .to().png().compress(); // quantize .png => .png (1,5-3x), без потери качества
 ```
 или
 ```rust
-let _ = Compressor::new("./input_images/", "./output_images/").unwrap()
+let _ = Compressor::new("./input_images/", "./output_images/", false).unwrap()
   .to().all().compress(); // .jpeg, .jpg => .webp; .png => .png (1,5-3x), без потери качества
 ```
 
