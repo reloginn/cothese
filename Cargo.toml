@@ -2,7 +2,7 @@
 name = "encoder"
 version = "0.0.3"
 edition = "2021"
-author = "reloginn"
+author = "reloginn<hexeo.dev@gmail.com>"
 
 [dependencies]
 webp = "0.2.2"
