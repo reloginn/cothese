@@ -1,10 +1,9 @@
 [package]
 name = "encoder"
-version = "0.0.2"
+version = "0.0.3"
 edition = "2021"
 author = "reloginn"
 
 [dependencies]
 webp = "0.2.2"
 image = "0.24.0"
-rand = "0.8.5"

@@ -1,36 +1,36 @@
-use crate::{trash::{compress_jpeg_to_webp, generate_random_name}, Dir};
+use crate::{trash::compress_jpeg_to_webp, Dir, IterMutex};
 use std::fs;
 
 #[derive(Debug)]
 pub struct WebP {
     pub(crate) input_dir: Dir,
     pub(crate) output_dir: Dir,
+    pub(crate) _logs: bool,
+    pub(crate) iter: IterMutex,
 }
 
 impl WebP {
     pub fn compress(&self) {
-        let entries = fs::read_dir(&*self.input_dir).expect("Не могу прочитать директорию");
-        let mut count: usize = 0;
+        let entries = fs::read_dir(&self.input_dir.lock().unwrap().as_ref())
+            .expect("Не могу прочитать директорию");
         for entry in entries {
             if let Ok(entry) = entry {
                 let path = entry.path();
                 if path.is_file() {
                     if let "jpg" | "jpeg" | "png" = path.extension().unwrap().to_str().unwrap() {
-                        count += 1;
+                        *self.iter.lock().unwrap() += 1;
                         compress_jpeg_to_webp(
                             path,
                             self.output_dir
-                                .join(format!("{}", generate_random_name()))
+                                .lock()
+                                .unwrap()
+                                .as_ref()
+                                .join(format!("{}", *self.iter.lock().unwrap()))
                                 .with_extension("webp"),
                         )
                     }
                 }
             }
-        }
-        if count <= 0 {
-            println!("В заданной директории не было JPEG, PNG картинок, ничего не затронуто");
-        } else {
-            println!("Успешно конвертировано {} картинок", count)
         }
     }
 }

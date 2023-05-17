@@ -1,4 +1,7 @@
-use std::{sync::Arc, path::PathBuf};
+use std::{
+    path::PathBuf,
+    sync::{Arc, Mutex},
+};
 
 pub use self::compressor::Compressor;
 
@@ -10,4 +13,5 @@ mod kinds {
 mod compressor;
 mod trash;
 
-type Dir = Arc<PathBuf>;
+type Dir = Mutex<Arc<PathBuf>>;
+type IterMutex = Mutex<usize>;

@@ -1,6 +1,13 @@
-use std::{fmt::Display, path::PathBuf, sync::Arc};
+use std::{
+    fmt::Display,
+    path::PathBuf,
+    sync::{Arc, Mutex},
+};
 
-use crate::{kinds::{all::All, png::PNG, webp::WebP}, Dir};
+use crate::{
+    kinds::{all::All, png::PNG, webp::WebP},
+    Dir, IterMutex,
+};
 
 #[allow(unused)]
 #[derive(Debug)]
@@ -26,25 +33,35 @@ where
 pub struct Compressor {
     input_dir: Dir,
     output_dir: Dir,
+    _logs: bool,
+    iter: IterMutex,
 }
 
 #[derive(Debug)]
 pub struct To {
     input_dir: Dir,
     output_dir: Dir,
+    _logs: bool,
+    iter: IterMutex,
 }
 
 impl Compressor {
-    pub fn new<T>(input_directory: T, output_directory: T) -> Result<Self, SelfErrors<String>>
+    pub fn new<T, U>(
+        input_directory: T,
+        output_directory: U,
+        logs: bool,
+    ) -> Result<Self, SelfErrors<String>>
     where
         T: Display,
+        U: Display,
         PathBuf: From<T>,
+        PathBuf: From<U>,
     {
         let (input_dir, output_dir) = (
-            Arc::new(PathBuf::from(input_directory)),
-            Arc::new(PathBuf::from(output_directory)),
+            Mutex::new(Arc::new(PathBuf::from(input_directory))),
+            Mutex::new(Arc::new(PathBuf::from(output_directory))),
         );
-        if !input_dir.exists() || !output_dir.exists() {
+        if !input_dir.lock().unwrap().exists() || !output_dir.lock().unwrap().exists() {
             return Err(SelfErrors::Error(String::from(
                 "Одна из директорий невалидна, проверьте правильность директорий",
             )));
@@ -52,12 +69,16 @@ impl Compressor {
         Ok(Self {
             input_dir,
             output_dir,
+            _logs: logs,
+            iter: Mutex::new(0),
         })
     }
     pub fn to(self) -> To {
         To {
             input_dir: self.input_dir,
             output_dir: self.output_dir,
+            _logs: self._logs,
+            iter: self.iter,
         }
     }
 }
@@ -67,18 +88,24 @@ impl To {
         WebP {
             input_dir: self.input_dir,
             output_dir: self.output_dir,
+            _logs: self._logs,
+            iter: self.iter,
         }
     }
     pub fn png(self) -> PNG {
         PNG {
             input_dir: self.input_dir,
             output_dir: self.output_dir,
+            _logs: self._logs,
+            iter: self.iter,
         }
     }
     pub fn all(self) -> All {
         All {
             input_dir: self.input_dir,
             output_dir: self.output_dir,
+            _logs: self._logs,
+            iter: self.iter,
         }
     }
 }
