@@ -11,24 +11,22 @@ pub struct WebP {
 
 impl WebP {
     pub fn compress(&self) {
-        let entries = fs::read_dir(&self.input_dir.lock().unwrap().as_ref())
+        let entries = fs::read_dir(self.input_dir.lock().unwrap().as_ref())
             .expect("Не могу прочитать директорию");
-        for entry in entries {
-            if let Ok(entry) = entry {
-                let path = entry.path();
-                if path.is_file() {
-                    if let "jpg" | "jpeg" | "png" = path.extension().unwrap().to_str().unwrap() {
-                        *self.iter.lock().unwrap() += 1;
-                        compress_jpeg_to_webp(
-                            path,
-                            self.output_dir
-                                .lock()
-                                .unwrap()
-                                .as_ref()
-                                .join(format!("{}", *self.iter.lock().unwrap()))
-                                .with_extension("webp"),
-                        )
-                    }
+        for entry in entries.flatten() {
+            let path = entry.path();
+            if path.is_file() {
+                if let "jpg" | "jpeg" | "png" = path.extension().unwrap().to_str().unwrap() {
+                    *self.iter.lock().unwrap() += 1;
+                    compress_jpeg_to_webp(
+                        path,
+                        self.output_dir
+                            .lock()
+                            .unwrap()
+                            .as_ref()
+                            .join(format!("{}", *self.iter.lock().unwrap()))
+                            .with_extension("webp"),
+                    )
                 }
             }
         }

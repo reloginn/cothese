@@ -5,7 +5,7 @@ use std::{
 };
 
 use crate::{
-    kinds::{all::All, png::PNG, webp::WebP},
+    kinds::{all::All, png::Png, webp::WebP},
     Dir, IterMutex,
 };
 
@@ -92,8 +92,8 @@ impl To {
             iter: self.iter,
         }
     }
-    pub fn png(self) -> PNG {
-        PNG {
+    pub fn png(self) -> Png {
+        Png {
             input_dir: self.input_dir,
             output_dir: self.output_dir,
             _logs: self._logs,
