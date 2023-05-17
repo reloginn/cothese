@@ -11,22 +11,9 @@ use crate::{
 
 #[allow(unused)]
 #[derive(Debug)]
-pub enum SelfErrors<T>
-where
-    T: Display,
+pub enum SelfErrors
 {
-    Error(T),
-}
-
-impl<T> Display for SelfErrors<T>
-where
-    T: Display,
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Self::Error(err) => writeln!(f, "{}", err),
-        }
-    }
+    InvalidDirectory,
 }
 
 #[derive(Debug)]
@@ -50,7 +37,7 @@ impl Compressor {
         input_directory: T,
         output_directory: U,
         logs: bool,
-    ) -> Result<Self, SelfErrors<String>>
+    ) -> Result<Self, SelfErrors>
     where
         T: Display,
         U: Display,
@@ -62,9 +49,7 @@ impl Compressor {
             Mutex::new(Arc::new(PathBuf::from(output_directory))),
         );
         if !input_dir.lock().unwrap().exists() || !output_dir.lock().unwrap().exists() {
-            return Err(SelfErrors::Error(String::from(
-                "Одна из директорий невалидна, проверьте правильность директорий",
-            )));
+            return Err(SelfErrors::InvalidDirectory);
         }
         Ok(Self {
             input_dir,
