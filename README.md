@@ -12,7 +12,7 @@ let _ = Compressor::new("./input_images/", "./output_images/", false).unwrap() /
 - Примеры:
 ```rust
 let _ = Compressor::new("./input_images/", "./output_images/", false).unwrap() // третий параметр означает логи, если параметр true, то время сжатия будет логироваться, если false - то нет
-  .to().png().compress(); // quantize .png => .png (1,5-3x), без потери качества
+  .to().png().compress(); // .png => .png (1,5-3x), без потери качества
 ```
 или
 ```rust
