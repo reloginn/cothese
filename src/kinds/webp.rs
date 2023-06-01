@@ -26,6 +26,7 @@ impl WebP {
                             .as_ref()
                             .join(format!("{}", *self.iter.lock().unwrap()))
                             .with_extension("webp"),
+                        self._logs
                     )
                 }
             }

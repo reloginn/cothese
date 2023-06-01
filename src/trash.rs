@@ -10,7 +10,7 @@ use image::{
 };
 use webp::{Encoder, WebPMemory};
 
-pub(crate) fn quantize_png(path: PathBuf, output: PathBuf) {
+fn go_quantize(path: PathBuf, output: PathBuf) {
     let install = Command::new("cargo")
         .args(["install", "pngquant"])
         .status()
@@ -38,9 +38,18 @@ pub(crate) fn quantize_png(path: PathBuf, output: PathBuf) {
     }
 }
 
-pub(crate) fn compress_jpeg_to_webp(path: PathBuf, output: PathBuf) {
-    let start = Instant::now();
-    println!("Начинаю конвертировать файл {:?}...", &path);
+pub(crate) fn quantize_png(path: PathBuf, output: PathBuf, enable_logs: bool) {
+    if enable_logs {
+        let start = Instant::now();
+        println!(".png => .png...");
+        go_quantize(path, output);
+        println!(".png => .png: {:?}", start.elapsed());
+    } else {
+        go_quantize(path, output)
+    }
+}
+
+fn go_compress(path: PathBuf, output: PathBuf) {
     let image = image::open(path).unwrap();
     let (width, height) = (image.width(), image.height());
     const SIZE_FACTOR: f64 = 1.0;
@@ -53,5 +62,15 @@ pub(crate) fn compress_jpeg_to_webp(path: PathBuf, output: PathBuf) {
     let encoder: Encoder = Encoder::from_image(&img).unwrap();
     let webp: WebPMemory = encoder.encode(90f32);
     std::fs::write(output, &*webp).unwrap();
-    println!("Файл успешно конвертирован за {:?}", start.elapsed());
+}
+
+pub(crate) fn compress_jpeg_to_webp(path: PathBuf, output: PathBuf, enable_logs: bool) {
+    if enable_logs {
+        let start = Instant::now();
+        println!(".jpg, .jpeg, .png => .webp...");
+        go_compress(path, output);
+        println!(".jpg, .jpeg, .png => .webp: {:?}", start.elapsed());
+    } else {
+        go_compress(path, output)
+    }
 }

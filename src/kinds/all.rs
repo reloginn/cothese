@@ -30,6 +30,7 @@ impl All {
                                 .as_ref()
                                 .join(format!("{}", *self.iter.lock().unwrap()))
                                 .with_extension("webp"),
+                            self._logs
                         )
                     }
                     "png" => {
@@ -42,6 +43,7 @@ impl All {
                                 .as_ref()
                                 .join(format!("{}", *self.iter.lock().unwrap()))
                                 .with_extension("png"),
+                            self._logs
                         )
                     }
                     _ => (),
