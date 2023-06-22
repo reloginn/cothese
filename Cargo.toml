@@ -1,9 +1,16 @@
 [package]
-name = "encoder"
-version = "0.0.3"
+name = "image-compressor"
+version = "0.0.1"
 edition = "2021"
-author = "reloginn<hexeo.dev@gmail.com>"
+authors = ["reloginn <hexeo.dev@gmail.com>"]
 
 [dependencies]
 webp = "0.2.2"
 image = "0.24.0"
+clap = "2.33.4"
+
+[profile.release]
+strip = true
+opt-level = "z"
+lto = true
+codegen-units = 1

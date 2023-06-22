@@ -3,10 +3,10 @@ use std::fs;
 
 #[derive(Debug)]
 pub struct WebP {
-    pub(crate) input_dir: Dir,
-    pub(crate) output_dir: Dir,
-    pub(crate) _logs: bool,
-    pub(crate) iter: IterMutex,
+    pub input_dir: Dir,
+    pub output_dir: Dir,
+    pub _logs: bool,
+    pub iter: IterMutex,
 }
 
 impl WebP {
@@ -26,7 +26,7 @@ impl WebP {
                             .as_ref()
                             .join(format!("{}", *self.iter.lock().unwrap()))
                             .with_extension("webp"),
-                        self._logs
+                        self._logs,
                     )
                 }
             }

@@ -38,7 +38,7 @@ fn go_quantize(path: PathBuf, output: PathBuf) {
     }
 }
 
-pub(crate) fn quantize_png(path: PathBuf, output: PathBuf, enable_logs: bool) {
+pub fn quantize_png(path: PathBuf, output: PathBuf, enable_logs: bool) {
     if enable_logs {
         let start = Instant::now();
         println!(".png => .png...");
@@ -64,12 +64,12 @@ fn go_compress(path: PathBuf, output: PathBuf) {
     std::fs::write(output, &*webp).unwrap();
 }
 
-pub(crate) fn compress_jpeg_to_webp(path: PathBuf, output: PathBuf, enable_logs: bool) {
+pub fn compress_jpeg_to_webp(path: PathBuf, output: PathBuf, enable_logs: bool) {
     if enable_logs {
         let start = Instant::now();
-        println!(".jpg, .jpeg, .png => .webp...");
+        println!(".jpg, .jpeg, ... => .webp...");
         go_compress(path, output);
-        println!(".jpg, .jpeg, .png => .webp: {:?}", start.elapsed());
+        println!(".jpg, .jpeg, ... => .webp: {:?}", start.elapsed());
     } else {
         go_compress(path, output)
     }

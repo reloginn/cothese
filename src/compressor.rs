@@ -11,8 +11,7 @@ use crate::{
 
 #[allow(unused)]
 #[derive(Debug)]
-pub enum SelfErrors
-{
+pub enum SelfErrors {
     InvalidDirectory,
 }
 
