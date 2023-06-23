@@ -1,9 +1,9 @@
+use self::compressor::Compressor;
 use clap::{App, Arg};
 use std::{
     path::PathBuf,
     sync::{Arc, Mutex},
 };
-use self::compressor::Compressor;
 
 mod kinds {
     pub mod all;
@@ -30,11 +30,17 @@ fn main() {
         "false" => false,
         _ => panic!("Неизвестный параметр логирования, укажите true либо false"),
     };
-    let compressor = Compressor::new(matches.value_of("input_path").unwrap(), matches.value_of("output_path").unwrap(), logs).expect("Cannot create a compressor struct");
+    let compressor = Compressor::new(
+        matches.value_of("input_path").unwrap(),
+        matches.value_of("output_path").unwrap(),
+        logs,
+    )
+    .expect("Cannot create a compressor struct")
+    .to();
     match matches.value_of("type").expect("Cannot match the type") {
-        "all" => compressor.to().all().compress(),
-        "webp" => compressor.to().webp().compress(),
-        "png" => compressor.to().png().compress(),
+        "all" => compressor.all(),
+        "webp" => compressor.webp(),
+        "png" => compressor.png(),
         _ => panic!("Неизвестный тип сжатия"),
     };
 }

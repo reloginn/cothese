@@ -10,7 +10,7 @@ use image::{
 };
 use webp::{Encoder, WebPMemory};
 
-fn go_quantize(path: PathBuf, output: PathBuf) {
+fn quantize_it(path: PathBuf, output: PathBuf) {
     let install = Command::new("cargo")
         .args(["install", "pngquant"])
         .status()
@@ -38,18 +38,18 @@ fn go_quantize(path: PathBuf, output: PathBuf) {
     }
 }
 
-pub fn quantize_png(path: PathBuf, output: PathBuf, enable_logs: bool) {
+pub fn quantize_a_png_image(path: PathBuf, output: PathBuf, enable_logs: bool) {
     if enable_logs {
         let start = Instant::now();
         println!(".png => .png...");
-        go_quantize(path, output);
+        quantize_it(path, output);
         println!(".png => .png: {:?}", start.elapsed());
     } else {
-        go_quantize(path, output)
+        quantize_it(path, output)
     }
 }
 
-fn go_compress(path: PathBuf, output: PathBuf) {
+fn compress_it(path: PathBuf, output: PathBuf) {
     let image = image::open(path).unwrap();
     let (width, height) = (image.width(), image.height());
     const SIZE_FACTOR: f64 = 1.0;
@@ -68,9 +68,9 @@ pub fn compress_jpeg_to_webp(path: PathBuf, output: PathBuf, enable_logs: bool) 
     if enable_logs {
         let start = Instant::now();
         println!(".jpg, .jpeg, ... => .webp...");
-        go_compress(path, output);
+        compress_it(path, output);
         println!(".jpg, .jpeg, ... => .webp: {:?}", start.elapsed());
     } else {
-        go_compress(path, output)
+        compress_it(path, output)
     }
 }

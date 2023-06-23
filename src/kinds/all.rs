@@ -1,5 +1,5 @@
 use crate::{
-    trash::{compress_jpeg_to_webp, quantize_png},
+    trash::{compress_jpeg_to_webp, quantize_a_png_image},
     Dir, IterMutex,
 };
 use std::fs;
@@ -13,9 +13,9 @@ pub struct All {
 }
 
 impl All {
-    pub fn compress(&self) {
-        let entries = fs::read_dir(self.input_dir.lock().unwrap().as_ref())
-            .expect("Не могу прочитать директорию");
+    pub fn compress(self) {
+        let entries =
+            fs::read_dir(self.input_dir.lock().unwrap().as_ref()).expect("Cannot read a directory");
         for entry in entries.flatten() {
             let path = entry.path();
             if path.is_file() {
@@ -35,7 +35,7 @@ impl All {
                     }
                     "png" => {
                         *self.iter.lock().unwrap() += 1;
-                        quantize_png(
+                        quantize_a_png_image(
                             path,
                             self.output_dir
                                 .lock()

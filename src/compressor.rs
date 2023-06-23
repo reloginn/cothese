@@ -1,5 +1,4 @@
 use std::{
-    fmt::Display,
     path::PathBuf,
     sync::{Arc, Mutex},
 };
@@ -38,8 +37,6 @@ impl Compressor {
         logs: bool,
     ) -> Result<Self, SelfErrors>
     where
-        T: Display,
-        U: Display,
         PathBuf: From<T>,
         PathBuf: From<U>,
     {
@@ -68,28 +65,31 @@ impl Compressor {
 }
 
 impl To {
-    pub fn webp(self) -> WebP {
-        WebP {
+    pub fn webp(self) {
+        let webp = WebP {
             input_dir: self.input_dir,
             output_dir: self.output_dir,
             _logs: self._logs,
             iter: self.iter,
-        }
+        };
+        webp.compress()
     }
-    pub fn png(self) -> Png {
-        Png {
+    pub fn png(self) {
+        let png = Png {
             input_dir: self.input_dir,
             output_dir: self.output_dir,
             _logs: self._logs,
             iter: self.iter,
-        }
+        };
+        png.compress()
     }
-    pub fn all(self) -> All {
-        All {
+    pub fn all(self) {
+        let all = All {
             input_dir: self.input_dir,
             output_dir: self.output_dir,
             _logs: self._logs,
             iter: self.iter,
-        }
+        };
+        all.compress()
     }
 }

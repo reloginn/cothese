@@ -10,9 +10,9 @@ pub struct WebP {
 }
 
 impl WebP {
-    pub fn compress(&self) {
-        let entries = fs::read_dir(self.input_dir.lock().unwrap().as_ref())
-            .expect("Не могу прочитать директорию");
+    pub fn compress(self) {
+        let entries =
+            fs::read_dir(self.input_dir.lock().unwrap().as_ref()).expect("Cannot read a directory");
         for entry in entries.flatten() {
             let path = entry.path();
             if path.is_file() {
