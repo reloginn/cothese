@@ -21,10 +21,10 @@ fn main() {
         .version("0.0.1")
         .author("reloginn")
         .about("Эта программа сжимает все изображения в исходной папке и ложит успешно сжатые изображения в конечную папку")
-        .arg(Arg::with_name("input_path").alias("input").required(true).index(1))
-        .arg(Arg::with_name("output_path").alias("output").required(true).index(2))
-        .arg(Arg::with_name("type").default_value("all").alias("t").required(false))
-        .arg(Arg::with_name("logs").default_value("true").alias("l").required(false)).get_matches();
+        .arg(Arg::with_name("input_path").required(true))
+        .arg(Arg::with_name("output_path").required(true))
+        .arg(Arg::with_name("type").default_value("all").required(false))
+        .arg(Arg::with_name("logs").default_value("true").required(false)).get_matches();
     let logs = match matches.value_of("logs").expect("Cannot match the logs") {
         "true" => true,
         "false" => false,
