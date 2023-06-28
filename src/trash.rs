@@ -74,3 +74,31 @@ pub fn compress_jpeg_to_webp(path: PathBuf, output: PathBuf, enable_logs: bool) 
         compress_it(path, output)
     }
 }
+
+pub fn collect_args() -> Vec<String> {
+    let mut args = Vec::new();
+    for (index, value) in std::env::args().enumerate() {
+        if index != 0 {
+            args.push(value);
+        }
+    }
+    args
+}
+
+pub fn value_in_vec(value: &str, slice: &Vec<String>) -> bool {
+    for v in slice.iter() {
+        if *v == value.to_string() {
+            return true;
+        }
+    }
+    false
+}
+
+pub fn value_in_vec_with_index(value: &str, slice: &Vec<String>) -> Option<usize> {
+    for (i, v) in slice.into_iter().enumerate() {
+        if *v == value.to_string() {
+            return Some(i);
+        }
+    }
+    None
+}

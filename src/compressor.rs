@@ -35,7 +35,7 @@ impl Compressor {
         input_directory: T,
         output_directory: U,
         logs: bool,
-    ) -> Result<Self, SelfErrors>
+    ) -> Self
     where
         PathBuf: From<T>,
         PathBuf: From<U>,
@@ -44,15 +44,12 @@ impl Compressor {
             Mutex::new(Arc::new(PathBuf::from(input_directory))),
             Mutex::new(Arc::new(PathBuf::from(output_directory))),
         );
-        if !input_dir.lock().unwrap().exists() || !output_dir.lock().unwrap().exists() {
-            return Err(SelfErrors::InvalidDirectory);
-        }
-        Ok(Self {
+        Self {
             input_dir,
             output_dir,
             _logs: logs,
             iter: Mutex::new(0),
-        })
+        }
     }
     pub fn to(self) -> To {
         To {

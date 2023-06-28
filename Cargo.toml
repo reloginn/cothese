@@ -7,10 +7,9 @@ authors = ["reloginn <hexeo.dev@gmail.com>"]
 [dependencies]
 webp = "0.2.2"
 image = "0.24.0"
-clap = "2.33.4"
 
 [profile.release]
 strip = true
-opt-level = "z"
+opt-level = "s"
 lto = true
 codegen-units = 1

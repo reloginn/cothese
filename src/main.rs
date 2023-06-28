@@ -1,7 +1,11 @@
+use trash::{collect_args, value_in_vec};
+
+use crate::{trash::value_in_vec_with_index, consts::{HELP, VERSION}};
+
 use self::compressor::Compressor;
-use clap::{App, Arg};
 use std::{
     path::PathBuf,
+    process::exit,
     sync::{Arc, Mutex},
 };
 
@@ -12,35 +16,138 @@ mod kinds {
 }
 mod compressor;
 mod trash;
+mod consts;
 
 type Dir = Mutex<Arc<PathBuf>>;
 type IterMutex = Mutex<usize>;
 
 fn main() {
-    let matches = App::new("image-compressor")
-        .version("0.0.1")
-        .author("reloginn")
-        .about("Эта программа сжимает все изображения в исходной папке и ложит успешно сжатые изображения в конечную папку")
-        .arg(Arg::with_name("input_path").required(true))
-        .arg(Arg::with_name("output_path").required(true))
-        .arg(Arg::with_name("type").default_value("all").required(false))
-        .arg(Arg::with_name("logs").default_value("true").required(false)).get_matches();
-    let logs = match matches.value_of("logs").expect("Cannot match the logs") {
-        "true" => true,
-        "false" => false,
-        _ => panic!("Неизвестный параметр логирования, укажите true либо false"),
-    };
-    let compressor = Compressor::new(
-        matches.value_of("input_path").unwrap(),
-        matches.value_of("output_path").unwrap(),
-        logs,
-    )
-    .expect("Cannot create a compressor struct")
-    .to();
-    match matches.value_of("type").expect("Cannot match the type") {
-        "all" => compressor.all(),
-        "webp" => compressor.webp(),
-        "png" => compressor.png(),
-        _ => panic!("Неизвестный тип сжатия"),
-    };
+    let args = collect_args();
+    if value_in_vec("-h", &args) || value_in_vec("--help", &args) {
+        println!("{}", HELP);
+        exit(0)
+    } else if value_in_vec("-v", &args) || value_in_vec("--version", &args) {
+        println!("{}", VERSION);
+        exit(0)
+    }
+    if let Some(index) = value_in_vec_with_index("--input", &args) {
+        if args.len() <= index + 1 {
+            eprintln!("Ошибка: После флага --input должен быть путь до директории");
+            exit(1);
+        } else {
+            let input_path = PathBuf::from(&args[index + 1]);
+            if input_path.exists() {
+                if input_path.is_dir() {
+                    if let Some(index) = value_in_vec_with_index("--output", &args) {
+                        if args.len() <= index + 1 {
+                            eprintln!("Ошибка: После флага --output должен быть путь до директории");
+                            exit(1)
+                        } else {
+                            let output_path = PathBuf::from(&args[index + 1]);
+                            if output_path.exists() {
+                                if output_path.is_dir() {
+                                    if let Some(index) = value_in_vec_with_index("--logs", &args) {
+                                        if args.len() <= index + 1 {
+                                            eprintln!("Ошибка: Если вы указали флаг --logs, вы должны указать значение");
+                                            exit(1)
+                                        } else {
+                                            match args[index + 1].as_str() {
+                                                "true" => {
+                                                    const LOGS: bool = true;
+                                                    let compressor = Compressor::new(input_path, output_path, LOGS).to();
+                                                    if let Some(index) = value_in_vec_with_index("--type", &args) {
+                                                        if args.len() <= index + 1 {
+                                                            eprintln!("Ошибка: Если вы указали флаг --type, вы должны указать значение");
+                                                            exit(1)
+                                                        } else {
+                                                            match args[index + 1].as_str() {
+                                                                "all" => compressor.all(),
+                                                                "webp" => compressor.webp(),
+                                                                "png" => compressor.png(),
+                                                                _ => {
+                                                                    eprintln!("Ошибка: --type может иметь только значения all, webp или png");
+                                                                    exit(1)
+                                                                }
+                                                            }
+                                                        }
+                                                    } else {
+                                                        compressor.all()
+                                                    }
+                                                }
+                                                "false" => {
+                                                    const LOGS: bool = false;
+                                                    let compressor = Compressor::new(input_path, output_path, LOGS).to();
+                                                    if let Some(index) = value_in_vec_with_index("--type", &args) {
+                                                        if args.len() <= index + 1 {
+                                                            eprintln!("Ошибка: Если вы указали флаг --type, вы должны указать значение");
+                                                            exit(1)
+                                                        } else {
+                                                            match args[index + 1].as_str() {
+                                                                "all" => compressor.all(),
+                                                                "webp" => compressor.webp(),
+                                                                "png" => compressor.png(),
+                                                                _ => {
+                                                                    eprintln!("Ошибка: --type может иметь только значения all, webp или png");
+                                                                    exit(1)
+                                                                }
+                                                            }
+                                                        }
+                                                    } else {
+                                                        compressor.all()
+                                                    }
+                                                }
+                                                _ => {
+                                                    eprintln!("Ошибка: Флаг --logs может иметь только два значения: true или false");
+                                                    exit(1)
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        const LOGS: bool = true;
+                                        let compressor = Compressor::new(input_path, output_path, LOGS).to();
+                                        if let Some(index) = value_in_vec_with_index("--type", &args) {
+                                            if args.len() <= index + 1 {
+                                                eprintln!("Ошибка: Если вы указали флаг --type, вы должны указать значение");
+                                                exit(1)
+                                            } else {
+                                                match args[index + 1].as_str() {
+                                                    "all" => compressor.all(),
+                                                    "webp" => compressor.webp(),
+                                                    "png" => compressor.png(),
+                                                    _ => {
+                                                        eprintln!("Ошибка: --type может иметь только значения all, webp или png");
+                                                        exit(1)
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            compressor.all()
+                                        }
+                                    }
+                                } else {
+                                    eprintln!("Ошибка: --output: Путь не является папкой");
+                                    exit(1)
+                                }
+                            } else {
+                                eprintln!("Ошибка: --output: Такого пути не существует");
+                                exit(1)
+                            }
+                        }
+                    } else {
+                        eprintln!("Ошибка: Флаг --output является обязательным");
+                        exit(1)
+                    }
+                } else {
+                    eprintln!("Ошибка: --input: Путь не является папкой");
+                    exit(1)
+                }
+            } else {
+                eprintln!("Ошибка: --input: Такого пути не существует");
+                exit(1)
+            }
+        }
+    } else {
+        eprintln!("Ошибка: Флаг --input является обязательным");
+        exit(1);
+    }
 }
