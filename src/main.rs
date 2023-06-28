@@ -1,6 +1,6 @@
-use trash::{collect_args, value_in_vec};
+use trash::{collect_args, value_in_vec, value_in_vec_with_index};
 
-use crate::{trash::value_in_vec_with_index, consts::{HELP, VERSION}};
+use crate::consts::{HELP, VERSION};
 
 use self::compressor::Compressor;
 use std::{
