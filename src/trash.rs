@@ -87,7 +87,7 @@ pub fn collect_args() -> Vec<String> {
 
 pub fn value_in_vec(value: &str, slice: &Vec<String>) -> bool {
     for v in slice.iter() {
-        if *v == value.to_string() {
+        if *v == value {
             return true;
         }
     }
@@ -95,8 +95,8 @@ pub fn value_in_vec(value: &str, slice: &Vec<String>) -> bool {
 }
 
 pub fn value_in_vec_with_index(value: &str, slice: &Vec<String>) -> Option<usize> {
-    for (i, v) in slice.into_iter().enumerate() {
-        if *v == value.to_string() {
+    for (i, v) in slice.iter().enumerate() {
+        if *v == value {
             return Some(i);
         }
     }

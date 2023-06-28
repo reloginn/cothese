@@ -1,3 +1,5 @@
+#![allow(clippy::ptr_arg)]
+
 use trash::{collect_args, value_in_vec, value_in_vec_with_index};
 
 use crate::consts::{HELP, VERSION};
