@@ -13,7 +13,6 @@ use std::{
 
 mod kinds {
     pub mod all;
-    pub mod png;
     pub mod webp;
 }
 mod compressor;
@@ -64,10 +63,9 @@ fn main() {
                                                         } else {
                                                             match args[index + 1].as_str() {
                                                                 "all" => compressor.all(),
-                                                                "webp" => compressor.webp(),
-                                                                "png" => compressor.png(),
+                                                                "jpg-webp" => compressor.jpg_to_webp(),
                                                                 _ => {
-                                                                    eprintln!("Ошибка: --type может иметь только значения all, webp или png");
+                                                                    eprintln!("Ошибка: --type может иметь только значения all или jpg-webp");
                                                                     exit(1)
                                                                 }
                                                             }
@@ -86,10 +84,9 @@ fn main() {
                                                         } else {
                                                             match args[index + 1].as_str() {
                                                                 "all" => compressor.all(),
-                                                                "webp" => compressor.webp(),
-                                                                "png" => compressor.png(),
+                                                                "jpg-webp" => compressor.jpg_to_webp(),
                                                                 _ => {
-                                                                    eprintln!("Ошибка: --type может иметь только значения all, webp или png");
+                                                                    eprintln!("Ошибка: --type может иметь только значения all или jpg-webp");
                                                                     exit(1)
                                                                 }
                                                             }
@@ -114,10 +111,9 @@ fn main() {
                                             } else {
                                                 match args[index + 1].as_str() {
                                                     "all" => compressor.all(),
-                                                    "webp" => compressor.webp(),
-                                                    "png" => compressor.png(),
+                                                    "jpg-webp" => compressor.jpg_to_webp(),
                                                     _ => {
-                                                        eprintln!("Ошибка: --type может иметь только значения all, webp или png");
+                                                        eprintln!("Ошибка: --type может иметь только значения all или jpg-webp");
                                                         exit(1)
                                                     }
                                                 }

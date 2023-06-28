@@ -4,7 +4,7 @@ use std::{
 };
 
 use crate::{
-    kinds::{all::All, png::Png, webp::WebP},
+    kinds::{all::All, webp::WebP},
     Dir, IterMutex,
 };
 
@@ -62,7 +62,7 @@ impl Compressor {
 }
 
 impl To {
-    pub fn webp(self) {
+    pub fn jpg_to_webp(self) {
         let webp = WebP {
             input_dir: self.input_dir,
             output_dir: self.output_dir,
@@ -70,15 +70,6 @@ impl To {
             iter: self.iter,
         };
         webp.compress()
-    }
-    pub fn png(self) {
-        let png = Png {
-            input_dir: self.input_dir,
-            output_dir: self.output_dir,
-            _logs: self._logs,
-            iter: self.iter,
-        };
-        png.compress()
     }
     pub fn all(self) {
         let all = All {
