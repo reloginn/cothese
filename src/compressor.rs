@@ -1,83 +1,42 @@
-use std::{
-    path::PathBuf,
-    sync::{Arc, Mutex},
-};
+use std::{fs, path::PathBuf, process::exit};
 
-use crate::{
-    kinds::{all::All, webp::WebP},
-    Dir, IterMutex,
-};
+use crate::trash::compress_to_webp;
 
-#[allow(unused)]
-#[derive(Debug)]
-pub enum SelfErrors {
-    InvalidDirectory,
-}
-
-#[derive(Debug)]
 pub struct Compressor {
-    input_dir: Dir,
-    output_dir: Dir,
-    _logs: bool,
-    iter: IterMutex,
-}
-
-#[derive(Debug)]
-pub struct To {
-    input_dir: Dir,
-    output_dir: Dir,
-    _logs: bool,
-    iter: IterMutex,
+    input_dir: PathBuf,
+    output_dir: PathBuf,
+    logs: bool,
+    iter: usize,
 }
 
 impl Compressor {
-    pub fn new<T, U>(
-        input_directory: T,
-        output_directory: U,
-        logs: bool,
-    ) -> Self
-    where
-        PathBuf: From<T>,
-        PathBuf: From<U>,
-    {
-        let (input_dir, output_dir) = (
-            Mutex::new(Arc::new(PathBuf::from(input_directory))),
-            Mutex::new(Arc::new(PathBuf::from(output_directory))),
-        );
+    pub fn new(input_dir: PathBuf, output_dir: PathBuf, logs: bool) -> Self {
         Self {
             input_dir,
             output_dir,
-            _logs: logs,
-            iter: Mutex::new(0),
+            logs,
+            iter: 0,
         }
     }
-    pub fn to(self) -> To {
-        To {
-            input_dir: self.input_dir,
-            output_dir: self.output_dir,
-            _logs: self._logs,
-            iter: self.iter,
+    pub fn run(mut self) {
+        let entries = fs::read_dir(self.input_dir).unwrap_or_else(|err| {
+            eprintln!("Возникла ошибка при чтении директории: {}", err);
+            exit(1)
+        });
+        for entry in entries.flatten() {
+            let path = entry.path();
+            if path.is_file() {
+                if let "png" | "jpeg" | "jpg" = path.extension().unwrap().to_str().unwrap() {
+                    self.iter += 1;
+                    compress_to_webp(
+                        path,
+                        self.output_dir
+                            .join(format!("{}", self.iter))
+                            .with_extension("webp"),
+                        self.logs,
+                    )
+                }
+            }
         }
-    }
-}
-
-impl To {
-    pub fn jpg_to_webp(self) {
-        let webp = WebP {
-            input_dir: self.input_dir,
-            output_dir: self.output_dir,
-            _logs: self._logs,
-            iter: self.iter,
-        };
-        webp.compress()
-    }
-    pub fn all(self) {
-        let all = All {
-            input_dir: self.input_dir,
-            output_dir: self.output_dir,
-            _logs: self._logs,
-            iter: self.iter,
-        };
-        all.compress()
     }
 }
