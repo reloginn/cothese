@@ -1,12 +1,10 @@
-#![allow(clippy::ptr_arg)]
-
 use std::process::exit;
 
 use compressor::Compressor;
 
-use crate::app::parse_args;
+use crate::args_parser::parse_args;
 
-mod app;
+mod args_parser;
 mod compressor;
 mod consts;
 mod trash;
