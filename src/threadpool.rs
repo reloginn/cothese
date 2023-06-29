@@ -1,5 +1,8 @@
-use std::{sync::{Arc, mpsc, Mutex}, thread};
 use log::{log, Level};
+use std::{
+    sync::{mpsc, Arc, Mutex},
+    thread,
+};
 
 pub struct ThreadPool {
     workers: Vec<Worker>,

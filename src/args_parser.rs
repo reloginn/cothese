@@ -7,6 +7,7 @@ pub struct AppArgs {
     pub output: PathBuf,
     pub logs: Option<bool>,
     pub threads: Option<usize>,
+    pub quality: Option<f32>,
 }
 
 pub fn parse_args() -> Result<AppArgs, pico_args::Error> {
@@ -31,6 +32,7 @@ pub fn parse_args() -> Result<AppArgs, pico_args::Error> {
             })?,
         logs: pargs.opt_value_from_str("--logs")?,
         threads: pargs.opt_value_from_str("--threads")?,
+        quality: pargs.opt_value_from_str("--quality")?,
     };
     Ok(args)
 }

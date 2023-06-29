@@ -6,7 +6,7 @@ use image::{
 };
 use webp::{Encoder, WebPMemory};
 
-fn compress_it(path: PathBuf, output: PathBuf) {
+fn compress_it(path: PathBuf, output: PathBuf, quality: f32) {
     let image = image::open(path).unwrap_or_else(|err| {
         eprintln!("Возникла ошибка при открытии изображения: {}", err);
         exit(1)
@@ -23,20 +23,20 @@ fn compress_it(path: PathBuf, output: PathBuf) {
         eprintln!("Возникла ошибка при создании энкодера: {}", err);
         exit(1)
     });
-    let webp: WebPMemory = encoder.encode(90f32);
+    let webp: WebPMemory = encoder.encode(quality);
     std::fs::write(output, &*webp).unwrap_or_else(|err| {
         eprintln!("Возникла ошибка при записи готового изображения: {}", err);
         exit(1)
     });
 }
 
-pub fn compress_to_webp(path: PathBuf, output: PathBuf, logs: bool) {
+pub fn compress_to_webp(path: PathBuf, output: PathBuf, logs: bool, quality: f32) {
     if logs {
         let start = Instant::now();
         println!(".png, .jpg, .jpeg => .webp...");
-        compress_it(path, output);
+        compress_it(path, output, quality);
         println!(".png, .jpg, .jpeg => .webp: {:?}", start.elapsed());
     } else {
-        compress_it(path, output)
+        compress_it(path, output, quality)
     }
 }
