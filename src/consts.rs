@@ -14,5 +14,5 @@ cothese
 
 ";
 pub const VERSION: &str = "
-Image Compressor версии 0.0.3
+cothese версии 0.0.3
 ";

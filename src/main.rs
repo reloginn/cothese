@@ -14,8 +14,7 @@ mod trash;
 fn main() {
     match parse_args() {
         Ok(appargs) => {
-            let logs = appargs.logs.unwrap_or(true);
-            Compressor::new(appargs.input, appargs.output, logs).run();
+            Compressor::new(appargs.input, appargs.output, appargs.logs.unwrap_or(true)).run();
         }
         Err(err) => {
             eprintln!("Возникла ошибка: {}", err);
