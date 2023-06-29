@@ -1,5 +1,5 @@
 [package]
-name = "image-compressor"
+name = "cothese"
 version = "0.0.3"
 edition = "2021"
 authors = ["reloginn <hexeo.dev@gmail.com>"]

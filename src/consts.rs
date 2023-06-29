@@ -1,7 +1,7 @@
 pub const HELP: &str = "
-Image Compressor
+cothese
 
-Использование: image-compressor --input [Директория] --output [Директория] [ОПЦИИ]
+Использование: cothese --input [Директория] --output [Директория] [ОПЦИИ]
 
 Флаги:
     -h, --help                   Выводит помощь
