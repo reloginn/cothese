@@ -1,6 +1,6 @@
 use std::{ffi::OsStr, path::PathBuf, process::exit};
 
-use crate::consts::{HELP, VERSION};
+use crate::consts::{HELP_EN, HELP_RU, VERSION_EN, VERSION_RU};
 
 pub struct AppArgs {
     pub input: PathBuf,
@@ -12,13 +12,31 @@ pub struct AppArgs {
 
 pub fn parse_args() -> Result<AppArgs, pico_args::Error> {
     let mut pargs = pico_args::Arguments::from_env();
-    if pargs.contains(["-h", "--help"]) {
-        print!("{}", HELP);
-        exit(0);
+    match pargs.contains(["-h", "--help"]) {
+        true => match pargs.contains("--lang=ru") {
+            true => {
+                print!("{}", HELP_RU);
+                exit(0)
+            }
+            false => {
+                print!("{}", HELP_EN);
+                exit(0)
+            }
+        },
+        false => (),
     }
-    if pargs.contains(["-v", "--version"]) {
-        print!("{}", VERSION);
-        exit(0);
+    match pargs.contains(["-v", "--version"]) {
+        true => match pargs.contains("--lang=ru") {
+            true => {
+                print!("{}", VERSION_RU);
+                exit(0)
+            }
+            false => {
+                print!("{}", VERSION_EN);
+                exit(0)
+            }
+        },
+        false => (),
     }
 
     let args = AppArgs {

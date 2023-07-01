@@ -14,7 +14,7 @@ fn main() {
     match parse_args() {
         Ok(appargs) => {
             if let Some(quality) = appargs.quality {
-                if quality < 10.0 || quality > 100.0 {
+                if !(10.0..=100.0).contains(&quality) {
                     eprintln!("Возникла ошибка: Качество не может быть ниже 10.0 и выше 100.0");
                     exit(1)
                 }
@@ -23,7 +23,7 @@ fn main() {
                 appargs.input,
                 appargs.output,
                 appargs.logs.unwrap_or(true),
-                appargs.threads.unwrap_or(4usize),
+                appargs.threads.unwrap_or(8usize),
                 appargs.quality.unwrap_or(90f32),
             )
             .run();
