@@ -13,7 +13,7 @@ cothese 0.0.5
     --logs [bool]                true или false, отвечает за логирование действий (НЕОБЯЗАТЕЛЬНО)
     --threads [Количество]       Указывает количество воркеров в работе, значение по умолчанию: 8
     --quality [10.0-100.0]       Качество сжатого изображения, значение по умолчанию: 90.0. Влияет на скорость сжатия и качество изображения.
-    --lang=[lang]                Отвечает за язык. Поддерживается два языка: русский (ru), и английский (en), второй является языком по умолчанию.
+    --lang=[lang]                Отвечает за язык. По умолчанию язык -- английский, также доступен русский (ru), чтобы использовать просто добавьте --lang=ru.
 ";
 pub const HELP_EN: &str = "
 cothese 0.0.5
@@ -32,7 +32,7 @@ Options:
     --logs [bool]               true or false, responsible for logging actions (MUST)
     --threads [number]          Indicates the number of vorkers in operation, default value: 8
     --quality [10.0-100.0]      Quality of the compressed image, default value: 90.0. Affects the compression speed and quality of the image.
-    --lang=[lang]               Responsible for the language in the program. In addition to English (which is the default), ru (Russian) is also supported.";
+    --lang=[lang]               English is the default and Russian (ru) is also supported, to use Russian just write --lang=ru.";
 pub const VERSION_RU: &str = "
 cothese версии 0.0.5
 ";

@@ -12,33 +12,24 @@ pub struct AppArgs {
 
 pub fn parse_args() -> Result<AppArgs, pico_args::Error> {
     let mut pargs = pico_args::Arguments::from_env();
-    match pargs.contains(["-h", "--help"]) {
-        true => match pargs.contains("--lang=ru") {
-            true => {
-                print!("{}", HELP_RU);
-                exit(0)
-            }
-            false => {
-                print!("{}", HELP_EN);
-                exit(0)
-            }
-        },
-        false => (),
+    if pargs.contains(["-h", "--help"]) {
+        if pargs.contains("--lang=ru") {
+            print!("{}", HELP_RU);
+            exit(0)
+        } else {
+            print!("{}", HELP_EN);
+            exit(0)
+        }
     }
-    match pargs.contains(["-v", "--version"]) {
-        true => match pargs.contains("--lang=ru") {
-            true => {
-                print!("{}", VERSION_RU);
-                exit(0)
-            }
-            false => {
-                print!("{}", VERSION_EN);
-                exit(0)
-            }
-        },
-        false => (),
+    if pargs.contains(["-v", "--version"]) {
+        if pargs.contains("--lang=ru") {
+            print!("{}", VERSION_RU);
+            exit(0)
+        } else {
+            print!("{}", VERSION_EN);
+            exit(0)
+        }
     }
-
     let args = AppArgs {
         input: pargs
             .value_from_os_str("--input", |s: &OsStr| -> Result<PathBuf, &'static str> {
