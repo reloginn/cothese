@@ -1,4 +1,5 @@
 pub const HELP_RU: &str = "
+
 cothese 0.0.5
 
 Использование: cothese --input [Директория] --output [Директория] [ДРУГИЕ]
@@ -16,7 +17,6 @@ cothese 0.0.5
     --lang=[lang]                Отвечает за язык. По умолчанию язык -- английский, также доступен русский (ru), чтобы использовать просто добавьте --lang=ru.
 ";
 pub const HELP_EN: &str = "
-cothese 0.0.5
 
 cothese 0.0.5
 
@@ -27,10 +27,10 @@ Flags:
     -v, --version               Outputs version
 
 Options:
-    --input [directory]         Input directory with images (MUST BE PARAMETER)
-    -output [Directory]         The directory where your finalized images will be saved (MUST BE PARAMETER)
-    --logs [bool]               true or false, responsible for logging actions (MUST)
-    --threads [number]          Indicates the number of vorkers in operation, default value: 8
+    --input [Directory]         Input directory with images (MUST BE PARAMETER)
+    --output [Directory]        The directory where your finalized images will be saved (MUST BE PARAMETER)
+    --logs [true/false]         Responsible for logging actions (MUST)
+    --threads [count]           Indicates the number of vorkers in operation, default value: 8
     --quality [10.0-100.0]      Quality of the compressed image, default value: 90.0. Affects the compression speed and quality of the image.
     --lang=[lang]               English is the default and Russian (ru) is also supported, to use Russian just write --lang=ru.";
 pub const VERSION_RU: &str = "
