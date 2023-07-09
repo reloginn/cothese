@@ -39,3 +39,18 @@ cothese версии 0.0.5
 pub const VERSION_EN: &str = "
 cothese version 0.0.5
 ";
+
+pub const BOLD: &str = "\x1b[1m";
+pub const DEFAULT: &str = "\x1b[0m";
+#[allow(unused)]
+pub const BLACK: &str = "\x1b[30m";
+pub const RED: &str = "\x1b[31m";
+#[allow(unused)]
+pub const GREEN: &str = "\x1b[32m";
+#[allow(unused)]
+pub const YELLOW: &str = "\x1b[33m";
+pub const BLUE: &str = "\x1b[34m";
+#[allow(unused)]
+pub const MAGENTA: &str = "\x1b[35m";
+#[allow(unused)]
+pub const CYAN: &str = "\x1b[36m";

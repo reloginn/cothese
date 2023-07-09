@@ -1,6 +1,6 @@
 use std::{fs, path::PathBuf, process::exit};
 
-use crate::{threadpool::ThreadPool, trash::compress_to_webp};
+use crate::{threadpool::ThreadPool, trash::compress_to_webp, consts::{BOLD, RED, DEFAULT}};
 
 pub struct Compressor {
     input_dir: PathBuf,
@@ -31,7 +31,7 @@ impl Compressor {
     pub fn run(mut self) {
         let pool = ThreadPool::new(self.threads);
         let entries = fs::read_dir(self.input_dir).unwrap_or_else(|err| {
-            eprintln!("Возникла ошибка при чтении директории: {}", err);
+            eprintln!("Error has occured: {}{}{}{}", BOLD, RED, err, DEFAULT);
             exit(1)
         });
         for entry in entries.flatten() {
