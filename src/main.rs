@@ -29,7 +29,7 @@ fn main() {
             .run();
         }
         Err(err) => {
-            eprintln!("Возникла ошибка: {}", err);
+            eprintln!("Error has occured: {}{}{}{}", BOLD, RED, err, DEFAULT);
             exit(1)
         }
     };
