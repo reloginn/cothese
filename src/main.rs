@@ -2,7 +2,7 @@ use std::process::exit;
 
 use compressor::Compressor;
 
-use crate::{args_parser::parse_args, consts::{BOLD, RED, DEFAULT}};
+use crate::{args_parser::parse_args, consts::{BOLD, RED, DEFAULT, YELLOW}};
 
 mod args_parser;
 mod compressor;
@@ -19,11 +19,16 @@ fn main() {
                     exit(1)
                 }
             }
+            if let Some(threads) = &appargs.threads {
+                if *threads >= 64 {
+                    println!("{}{}[WARNING]{} You specified a number of threads greater than 64, this could lead to a problem", BOLD, YELLOW, DEFAULT)
+                }
+            }
             Compressor::new(
                 appargs.input,
                 appargs.output,
                 appargs.logs.unwrap_or(true),
-                appargs.threads.unwrap_or(8usize),
+                appargs.threads.unwrap_or(8),
                 appargs.quality.unwrap_or(90f32),
             )
             .run();
